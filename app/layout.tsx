@@ -16,12 +16,12 @@ const ubuntu = Ubuntu({
 });
 
 export const metadata: Metadata = {
-  title: "Menfess.comp — Kesan & Pesan PKKMB FKOM UNIKU 2026",
+  title: "Menfess.comp | Kesan & Pesan PKKMB FKOM UNIKU 2026",
   description:
     "Sampaikan kesan dan pesanmu setelah rangkaian PKKMB FKOM UNIKU 2026. Setiap pesan akan menghasilkan e-card resmi yang bisa kamu bagikan.",
   keywords: ["PKKMB", "FKOM", "UNIKU", "kesan pesan", "mahasiswa baru", "2026"],
   openGraph: {
-    title: "Menfess.comp — Kesan & Pesan PKKMB FKOM UNIKU 2026",
+    title: "Menfess.comp | Kesan & Pesan PKKMB FKOM UNIKU 2026",
     description: "Tinggalkan kesan dan pesanmu untuk PKKMB FKOM UNIKU 2026.",
     locale: "id_ID",
     type: "website",
