@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 /**
  * TechnicalCard — Blueprint + Neobrutalism + Bento Card
  * Sesuai VIG-PKKMB-UNIKU-2026 & layout referensi teknis cetak biru:
@@ -69,10 +71,14 @@ function formatDate(dateStr: string): string {
   }
 }
 
+/* ── Threshold: karakter panjang pesan untuk tampilkan tombol ── */
+const CLAMP_THRESHOLD = 220
+
 export default function TechnicalCard({
   entry,
   forDownload = false,
 }: TechnicalCardProps) {
+  const [expanded, setExpanded] = useState(false)
   const hasPhoto = Boolean(entry.foto_url && entry.foto_url.trim() !== '')
   const prodiInfo = getProdiInfo(entry.prodi)
   const cardId    = `PKKMB FKOM · KESAN & PESAN · 2026`
@@ -416,34 +422,82 @@ export default function TechnicalCard({
       {/* ══════════════════════════════════════════════════════
           3. MESSAGE BENTO COMPARTMENT
       ══════════════════════════════════════════════════════ */}
-      <div
-        style={{
-          background: '#F8FAFC',
-          border: '1.5px solid rgba(22,49,66,0.12)',
-          borderRadius: 8,
-          padding: '12px 14px',
-          flex: 1,
-          position: 'relative',
-          marginRight: 14,
-        }}
-      >
-        <p
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontWeight: 500,
-            fontSize: '0.95rem',
-            color: '#163142',
-            lineHeight: 1.55,
-            margin: 0,
-            display: '-webkit-box',
-            WebkitLineClamp: forDownload ? 999 : 5,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
-          &ldquo;{entry.pesan}&rdquo;
-        </p>
-      </div>
+      {(() => {
+        const isLong = !forDownload && entry.pesan.length > CLAMP_THRESHOLD
+        const shouldClamp = isLong && !expanded
+        return (
+          <div
+            style={{
+              background: '#F8FAFC',
+              border: '1.5px solid rgba(22,49,66,0.12)',
+              borderRadius: 8,
+              padding: '12px 14px',
+              flex: 1,
+              position: 'relative',
+              marginRight: 14,
+            }}
+          >
+            <p
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 500,
+                fontSize: '0.95rem',
+                color: '#163142',
+                lineHeight: 1.55,
+                margin: 0,
+                display: '-webkit-box',
+                WebkitLineClamp: shouldClamp ? 5 : 999,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                transition: 'all 0.35s ease',
+              }}
+            >
+              &ldquo;{entry.pesan}&rdquo;
+            </p>
+
+            {/* ── Lihat Selengkapnya / Sembunyikan ── */}
+            {isLong && (
+              <button
+                type="button"
+                onClick={() => setExpanded(prev => !prev)}
+                style={{
+                  marginTop: 8,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-heading)',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  color: '#005E85',
+                  letterSpacing: '0.02em',
+                  transition: 'color 0.15s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#E09A14')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#005E85')}
+              >
+                {expanded ? 'Sembunyikan' : 'Lihat selengkapnya'}
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  style={{
+                    transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.25s ease',
+                    flexShrink: 0,
+                  }}
+                >
+                  <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
+                </svg>
+              </button>
+            )}
+          </div>
+        )
+      })()}
 
       {/* ══════════════════════════════════════════════════════
           4. FOOTER: Technical ID + Date
